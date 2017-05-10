@@ -16,9 +16,18 @@ jobs:
     plan:
     - get: super-app
       trigger: true
+    - put: super-app
+      params: {path: super-app, context: Unit tests, status: pending}
 
     - task: run unit
       file: super-app/tasks/unit.yml
+
+    on_success:
+      put: super-app
+      params: {path: super-app, context: Unit tests, status: success}
+    on_failure:
+      put: super-app
+      params: {path: super-app, context: Unit tests, status: failure}
 
   - name: PR lint testing
     plan:
@@ -27,6 +36,14 @@ jobs:
 
     - task: run lint
       file: super-app/tasks/lint.yml
+
+    on_success:
+      put: super-app
+      params: {path: super-app, context: Lint, status: success}
+    on_failure:
+      put: super-app
+      params: {path: super-app, context: Lint, status: failure}
+
 
   - name: PR building & integeration testing
     plan:
