@@ -16,6 +16,8 @@ jobs:
     plan:
     - get: super-app
       trigger: true
+    - put: super-app
+      params: {path: super-app, context: Unit tests, status: pending}
 
     - task: run unit
       file: super-app/tasks/unit.yml
